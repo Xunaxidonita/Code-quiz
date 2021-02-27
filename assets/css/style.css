@@ -47,8 +47,30 @@ header {
   margin: 35px auto 35px auto;
   font-size: larger;
   color: #333377;
+  text-align: center;
+}
+
+.question {
+  font-size: 38px;
 }
 
 #timer {
   margin: 20px;
+}
+
+.trivia {
+  display: block;
+  align-self: center;
+  justify-self: center;
+  width: 70%;
+  margin: 35px auto 0 auto;
+}
+
+.answers {
+  text-decoration: none;
+}
+
+.ghost {
+  color: #555555;
+  opacity: 80%;
 }
