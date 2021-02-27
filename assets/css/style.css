@@ -42,8 +42,13 @@ header {
   text-align: center;
   font-size: 18px;
 }
+
 .title {
   margin: 35px auto 35px auto;
   font-size: larger;
   color: #333377;
+}
+
+#timer {
+  margin: 20px;
 }

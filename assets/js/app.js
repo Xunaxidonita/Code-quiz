@@ -1,4 +1,7 @@
 //const START = "start";
+var counter = 60;
+var timeLeft = document.getElementById("counter");
+timeLeft.textContent = counter;
 const display = document.getElementById("panel");
 const contentGenerator = function (x, y) {
   replaceChildren(x, y);
@@ -9,12 +12,25 @@ var removeAllChildNodes = function (parent) {
     parent.removeChild(parent.firstChild);
   }
 };
+
 var replaceChildren = function (parent, array) {
   removeAllChildNodes(parent);
   for (let i = 0; i < array.length; i++) {
     let child = array[i];
     parent.appendChild(child);
   }
+};
+
+var startCounter = function () {
+  var countdown = setInterval(function () {
+    if (counter >= 0) {
+      timeLeft.textContent = counter;
+      counter--;
+    } else {
+      clearInterval(countdown);
+      alert("Your time is over!");
+    }
+  }, 1000);
 };
 
 var splashContainer = function () {
@@ -38,6 +54,7 @@ var splashContainer = function () {
     "style",
     "display: block; margin: 35px auto 35px auto;"
   );
+  contentButton.addEventListener("click", startCounter);
   let myContents = [contentTitle, contentParagraph, contentButton];
   return myContents;
 };
@@ -46,7 +63,6 @@ var trivia = function () {
   var questionaire = document.createElement("div");
   questionaire.setAttribute("class", "trivia");
   let myContents = [questionaire];
-  return myContents;
 };
 
 var question = function (obj) {
@@ -95,18 +111,15 @@ contentGenerator(display, splashContainer());
 //splashContainer();
 //display("start");
 
-var counter = 60;
-var timeLeft = document.getElementById("counter");
-
-var countdown = setInterval(function () {
-  if (counter > 0) {
-    timeLeft.textContent = counter;
-    counter--;
-  } else {
-    clearInterval(countdown);
-    alert("Your time is over!");
-  }
-}, 1000);
+//var countdown = setInterval(function () {
+//  if (counter >= 0) {
+//    timeLeft.textContent = counter;
+//    counter--;
+//  } else {
+//    clearInterval(countdown);
+//    alert("Your time is over!");
+//  }
+//}, 1000);
 
 //countdown();
 
