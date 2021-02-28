@@ -6,6 +6,8 @@ var timeLeft = document.getElementById("counter");
 timeLeft.textContent = counter;
 const display = document.getElementById("panel");
 var lastAnswerStatus = null;
+var countdown = null;
+var score = null;
 
 let triviaQuestions = [
   {
@@ -109,7 +111,7 @@ var replaceChildren = function (parent, array) {
 
 // create a function that starts the timer.
 var startCounter = function () {
-  var countdown = setInterval(function () {
+  countdown = setInterval(function () {
     if (counter >= 0) {
       timeLeft.textContent = counter;
       counter--;
@@ -183,23 +185,28 @@ var toBtnListItem = function (obj, parent) {
   var listTagged = options.map((answer, index) => {
     let i = index + 1;
     let liEl = document.createElement("li");
+    liEl.setAttribute("class", "listEl");
     let btnEl = document.createElement("button");
     btnEl.setAttribute("class", "button");
+    btnEl.setAttribute("style", "margin: 4px;");
     btnEl.textContent = i + ". " + answer;
     var rightAnswer = obj["answer"];
     btnEl.addEventListener("click", (btn) => {
       if (answer === rightAnswer) {
-        checkAnswer(RIGHT);
+        setAnswer(RIGHT);
       } else {
-        checkAnswer(WRONG);
+        setAnswer(WRONG);
       }
-      while (questionPool.length > 0) {
+      if (questionPool.length > 0) {
         replaceChildren(
           parent,
           question(nextQuestion(questionPool), parent, lastAnswerStatus)
         );
+      } else {
+        score = counter + 1;
+        clearInterval(countdown);
+        contentGenerator(parent, getScore());
       }
-      contentGenerator(display, score());
     });
     liEl.appendChild(btnEl);
     return liEl;
@@ -207,18 +214,22 @@ var toBtnListItem = function (obj, parent) {
   return listTagged;
 };
 
-function checkAnswer(word = "") {
+function setAnswer(word = "") {
   lastAnswerStatus = word;
 }
 
-var question = function (myQuestion, parent, lastAnswer) {
-  //let myQuestion = obj;
-  //if ((answer = WRONG)) {
-  //  counter = counter - 5;
-  //}
+var question = function (myQuestion, parent, lastAnswerStatus) {
+  if (lastAnswerStatus === WRONG) {
+    counter = counter - 5;
+  }
+
   var contentSubtitle = document.createElement("h2");
   contentSubtitle.setAttribute("class", "question");
   contentSubtitle.setAttribute("class", "title");
+  contentSubtitle.setAttribute(
+    "style",
+    "margin: 35px auto 35px auto; font-size: 34px; text-align: left;"
+  );
   contentSubtitle.textContent = myQuestion["question"];
 
   var contentList = document.createElement("ul");
@@ -228,57 +239,96 @@ var question = function (myQuestion, parent, lastAnswer) {
   var divEl = document.createElement("div");
   divEl.setAttribute("class", "ghost");
 
-  var contentChecker = checkAnswer(lastAnswer);
+  var contentChecker = checkAnswer();
   divEl.appendChild(contentChecker);
 
   let myContents = [contentSubtitle, contentList, contentChecker];
   return myContents;
 };
 
-var score = function () {
+var getScore = function () {
   var contentSubtitle = document.createElement("h2");
+  contentSubtitle.setAttribute("class", "question");
+  contentSubtitle.setAttribute("class", "title");
+  contentSubtitle.setAttribute(
+    "style",
+    "margin: 35px auto 35px auto; font-size: 34px; text-align: left;"
+  );
+  contentSubtitle.textContent = "All done!";
+
   var contentParagraph = document.createElement("p");
+  contentParagraph.textContent = "Your final score is " + score;
+  contentParagraph.setAttribute(
+    "style",
+    "display: block; marging: 15px auto 15px 0; "
+  );
   var contentForm = document.createElement("div");
+  contentForm.setAttribute("style", "display: block; margin: 12px auto 0 0;");
   var contentInstruction = document.createElement("h5");
+  contentInstruction.textContent = "Enter Initials : ";
+  contentInstruction.setAttribute(
+    "style",
+    "display: inline; line-height: 1.5; margin-right: 5px; font-size: 16px;"
+  );
   var contentPlayerInput = document.createElement("input");
+  contentPlayerInput.setAttribute(
+    "style",
+    "display: inline; line-height: 1.5; margin-right: 5px; font-size: 14px;"
+  );
   var contentButton = document.createElement("button");
+  contentButton.setAttribute("class", "button");
+  contentButton.textContent = "Submit";
+  contentButton.addEventListener("click", (btn) => {
+    contentGenerator(display, highScores());
+  });
   let formElements = [contentInstruction, contentPlayerInput, contentButton];
   appendList(contentForm, formElements);
-  var contentChecker = document.createElement("h4");
-  let myContents = [
-    contentSubtitle,
-    contentParagraph,
-    contentForm,
-    contentChecker,
-  ];
+
+  var divEl = document.createElement("div");
+  divEl.setAttribute("class", "ghost");
+
+  var contentChecker = checkAnswer();
+  divEl.appendChild(contentChecker);
+
+  let myContents = [contentSubtitle, contentParagraph, contentForm, divEl];
   return myContents;
 };
-//var contentSubtitle = document.createElement("h2");
-//var contentList = document.createElement("ol");
-//var contentChecker = document.createElement("h4");
-//var contentPlayerInput = document.createElement("input");
-//var contentInstruction = document.createElement("h5");
-//var contentShow = document.createElement("ol");
+
+var highScores = function () {
+  var contentTitle = document.createElement("h1");
+  contentTitle.textContent = "Highscores";
+  contentTitle.setAttribute("class", "title");
+  contentTitle.setAttribute(
+    "style",
+    "margin: 35px auto 35px auto; font-size: 42px; text-align: center;"
+  );
+  var contentShow = document.createElement("ol");
+  var div = document.createElement("div");
+  div.setAttribute("class", "bottomBtns");
+  var btn1 = document.createElement("button");
+  contentButton.textContent = "Go Back";
+  contentButton.setAttribute("class", "button");
+  contentButton.setAttribute("id", "back");
+  contentButton.setAttribute("style", "display: block; margin: 0 12px 0 12px;");
+  var btn2 = document.createElement("button");
+  contentButton.textContent = "Clear Highscores";
+  contentButton.setAttribute("class", "button");
+  contentButton.setAttribute("id", "reset");
+  contentButton.setAttribute("style", "display: block; margin: 0 12px 0 12px;");
+  let buttons = [btn1, btn2];
+  appendList(div, buttons);
+};
 
 contentGenerator(display, splashContainer());
 
-function checkAnswer(lastAnswer) {
+function checkAnswer() {
+  if (lastAnswerStatus === null) {
+    lastAnswerChecked = "";
+  } else {
+    lastAnswerChecked = lastAnswerStatus + "!";
+  }
   var contentChecker = document.createElement("h4");
-  contentChecker.setAttribute("id", "#checker");
-  contentChecker.textContent = lastAnswer;
+  contentChecker.setAttribute("id", "checker");
+  contentChecker.textContent = lastAnswerChecked;
   return contentChecker;
 }
-//splashContainer();
-//display("start");
-
-//var countdown = setInterval(function () {
-//  if (counter >= 0) {
-//    timeLeft.textContent = counter;
-//    counter--;
-//  } else {
-//    clearInterval(countdown);
-//    alert("Your time is over!");
-//  }
-//}, 1000);
-
-//countdown();

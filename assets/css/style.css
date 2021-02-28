@@ -26,6 +26,11 @@ header {
   justify-content: center;
 }
 
+#panel {
+  width: 80%;
+  margin: 10px auto 10px auto;
+}
+
 .button {
   border-radius: 8px;
   background-color: rgb(18, 7, 122);
@@ -33,6 +38,10 @@ header {
   padding: 10px;
   border: blue, solid, 2px;
   font-size: 14px;
+}
+
+.button:hover {
+  background-color: rgb(7, 136, 223);
 }
 
 #instructions {
@@ -62,14 +71,29 @@ header {
   display: block;
   align-self: center;
   justify-self: center;
-  width: 70%;
+  width: 60%;
   margin: 35px auto 0 auto;
 }
 
+.trivia .button {
+  padding: 5px 10px 5px 10px;
+}
+
 .answers {
+  margin-bottom: 15px;
+}
+
+.listEl {
   text-decoration: none;
 }
 
+#checker {
+  height: 40px;
+  padding: 15px auto 15px 12px;
+  border-top: 1px, solid, #555555;
+  display: inline-block;
+  text-align: left;
+}
 .ghost {
   color: #555555;
   opacity: 80%;
