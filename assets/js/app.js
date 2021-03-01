@@ -16,49 +16,58 @@ var players = 1;
 
 let triviaQuestions = [
   {
-    question: "cual es a",
-    answer: "a",
-    options: ["a", "b", "c", "d"],
+    question: "Inside which HTML element do we put the JavaScript?",
+    answer: "<script>",
+    options: ["<javascript>", "<script>", "<js>", "<scripting>"],
   },
   {
-    question: "cual es b",
-    answer: "b",
-    options: ["a", "b", "c", "d"],
+    question:
+      "What is the correct JavaScript syntax to change the content of the HTML element below? <p id='demo'>This is a demonstration.</p>",
+    answer: `document.getElementById("demo").innerHTML = "Hello World!";`,
+    options: [
+      `document.getElementByName("p").innerHTML = "Hello World!";`,
+      `document.getElementById("demo").innerHTML = "Hello World!";`,
+      `#demo.innerHTML = "Hello World!";`,
+      `document.getElement("p").innerHTML = "Hello World!";`,
+    ],
   },
   {
-    question: "cual es c",
-    answer: "c",
-    options: ["a", "b", "c", "d"],
+    question: `(function(){
+      return typeof arguments;
+    })();`,
+    answer: `"object"`,
+    options: [`"object"`, `"array"`, `"arguments"`, `"undefined"`],
   },
   {
-    question: "cual es d",
-    answer: "d",
-    options: ["a", "e", "i", "d"],
+    question: `var f = function g(){ return 23; };
+    typeof g();`,
+    answer: '"number"',
+    options: ['"number"', '"undefined"', '"function"', "Error"],
   },
   {
-    question: "cual es e",
-    answer: "e",
-    options: ["a", "e", "o", "d"],
+    question: `(function(x){
+      delete x;
+      return x;
+    })(1);`,
+    answer: "1",
+    options: ["1", "null", "undefined", "Error"],
   },
   {
-    question: "cual es u",
-    answer: "u",
-    options: ["a", "o", "u", "d"],
+    question: `How to Write an IF statement for executing some code if "i" is not equal to 5?`,
+    answer: "if (i != 5)",
+    options: ["if i <> 5", "if f =! 5 then", "if (i != 5)", "if (i <> 5)"],
   },
   {
-    question: "cual es i",
-    answer: "i",
-    options: ["a", "i", "c", "d"],
+    question: "What is the correct way to write a JavaScript array?",
+    answer: `var colors = ["red", "green", "blue"]`,
+    options: [
+      `var colors = (1: "red", 2: "green", 3: "blue")`,
+      `var colors = "red", "green", "blue"`,
+      `var colors = 1 = ("red"), 2 = ("green"), 3 = ("blue")`,
+      `var colors = ["red", "green", "blue"]`,
+    ],
   },
 ];
-
-// triviaQuestions = [
-//   {
-//     question: "Cuantos cuentos cuentas?",
-//     answer: "0",
-//     options: ["0", "2", "todos", "250"],
-//   },
-// ];
 
 //create function to clone array in order to avoid rewriting stored data.
 var cloneArray = function (array) {
@@ -117,7 +126,7 @@ var replaceChildren = function (parent, array) {
 // create a function that starts the timer.
 var startCounter = function () {
   countdownInterval = setInterval(function () {
-    if (counter >= 0) {
+    if (counter > 0) {
       counter--;
       timeLeft.textContent = counter;
     } else {
@@ -142,7 +151,7 @@ var splashContainer = function () {
   );
   var contentParagraph = document.createElement("p");
   contentParagraph.textContent =
-    "Try to answer the following code-related questions within the time limit. Keep in mind that incorrect answers will penalize your scoretime by 5 seconds.";
+    "Try to answer the following code-related questions within the time limit. Keep in mind that incorrect answers will penalize your scoretime by 10 seconds.";
   contentParagraph.setAttribute("id", "instructions");
   var contentButton = document.createElement("button");
   contentButton.textContent = "Start Quiz";
@@ -237,7 +246,7 @@ function setAnswer(word = "") {
 
 var question = function (myQuestion, parent, lastAnswerStatus) {
   if (lastAnswerStatus === WRONG) {
-    counter = counter - 5;
+    counter = counter - 10;
     timeLeft.textContent = counter;
   }
 
@@ -301,6 +310,9 @@ var getScore = function () {
   contentButton.textContent = "Submit";
   contentButton.addEventListener("click", (btn) => {
     let playerInitials = contentPlayerInput.value;
+    if (playerInitials === "") {
+      playerInitials = "--";
+    }
     let playerScore = getFinalScore();
     var topPlayer = { player: playerInitials, score: playerScore };
     scoreBoard.push(topPlayer);
@@ -331,10 +343,13 @@ var highScores = function () {
     "style",
     "margin: 35px auto 35px auto; font-size: 42px; text-align: center;"
   );
+  var contentTable = document.createElement("div");
+  contentTable.setAttribute("class", "table");
   var contentShow = document.createElement("ol");
   contentShow.setAttribute("class", "board");
   var best5 = mapHighScores(scoreBoard);
   appendList(contentShow, best5);
+  contentTable.appendChild(contentShow);
   var btnBar = document.createElement("div");
   btnBar.setAttribute("class", "bottomBtns");
   var btn1 = document.createElement("button");
@@ -357,7 +372,7 @@ var highScores = function () {
   //btn2.setAttribute("style", "display: block; margin: 0 12px 0 12px;");
   let buttons = [btn1, btn2];
   appendList(btnBar, buttons);
-  let myContents = [contentTitle, contentShow, btnBar];
+  let myContents = [contentTitle, contentTable, btnBar];
   return myContents;
 };
 

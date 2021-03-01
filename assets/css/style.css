@@ -99,7 +99,22 @@ header {
   opacity: 80%;
 }
 
+.table {
+  background-color: #aabbe7;
+  margin: 0 auto;
+  max-width: 550px;
+}
+
 .board {
+  width: 75%;
+  line-height: 1.7;
+  margin: 12px auto 12px auto;
+  color: black;
+  font-weight: bold;
+}
+
+li.score:nth-child(2n) {
+  background-color: #b2d8e4;
 }
 
 .bottomBtns {
@@ -113,4 +128,29 @@ header {
 .bottomBtns button {
   padding: 5px 10px 5px 10px;
   margin: 0 10px 0 10px;
+}
+
+.score {
+  font-size: 18px;
+  padding: 5px;
+}
+
+.score span {
+  margin-left: 85px;
+}
+
+footer {
+  margin-top: 100px;
+  color: #555555;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+}
+
+footer h3 {
+  margin: 30px;
+}
+
+footer span {
+  color: #222299;
 }
