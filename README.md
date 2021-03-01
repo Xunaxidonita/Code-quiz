@@ -12,7 +12,7 @@ A website that hosts a quick thinking game of coding knowledge. Take a quiz agai
 
 ## Website
 
-https://xunaxidonita.github.io/Code_quiz
+ https://xunaxidonita.github.io/Code-quiz/.
 
 ## Contribution
 
