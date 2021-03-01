@@ -98,3 +98,19 @@ header {
   color: #555555;
   opacity: 80%;
 }
+
+.board {
+}
+
+.bottomBtns {
+  margin: 25px auto 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.bottomBtns button {
+  padding: 5px 10px 5px 10px;
+  margin: 0 10px 0 10px;
+}

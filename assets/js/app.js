@@ -1,13 +1,18 @@
 //const START = "start";
 const WRONG = "wrong";
 const RIGHT = "right";
+const hSKey = "highScoreBoard";
+var scoreBoard = JSON.parse(localStorage.getItem(hSKey));
+if (scoreBoard === null) {
+  scoreBoard = [];
+}
 var counter = 60;
 var timeLeft = document.getElementById("counter");
 timeLeft.textContent = counter;
 const display = document.getElementById("panel");
 var lastAnswerStatus = null;
-var countdown = null;
-var score = null;
+var countdownInterval = null;
+var players = 1;
 
 let triviaQuestions = [
   {
@@ -80,7 +85,7 @@ var randomized = function (array) {
   return array2;
 };
 
-var questionPool = randomized(triviaQuestions);
+var questionPool;
 
 // create a page builder that could be called anytime.
 const contentGenerator = function (x, y) {
@@ -111,12 +116,12 @@ var replaceChildren = function (parent, array) {
 
 // create a function that starts the timer.
 var startCounter = function () {
-  countdown = setInterval(function () {
+  countdownInterval = setInterval(function () {
     if (counter >= 0) {
-      timeLeft.textContent = counter;
       counter--;
+      timeLeft.textContent = counter;
     } else {
-      clearInterval(countdown);
+      clearInterval(countdownInterval);
       alert("Your time is over!");
     }
   }, 1000);
@@ -124,6 +129,10 @@ var startCounter = function () {
 
 //create a function for the start page.
 var splashContainer = function () {
+  counter = 60;
+  timeLeft.textContent = counter;
+  lastAnswerStatus = null;
+
   var contentTitle = document.createElement("h1");
   contentTitle.textContent = "Coding Quiz Challenge";
   contentTitle.setAttribute("class", "title");
@@ -153,6 +162,8 @@ var splashContainer = function () {
 
 //create a template for the questions to be displayed.
 var trivia = function () {
+  questionPool = randomized(triviaQuestions);
+
   var questionaire = document.createElement("div");
   questionaire.setAttribute("class", "trivia");
   let myContents = [questionaire];
@@ -203,10 +214,16 @@ var toBtnListItem = function (obj, parent) {
           question(nextQuestion(questionPool), parent, lastAnswerStatus)
         );
       } else {
-        score = counter + 1;
-        clearInterval(countdown);
+        clearInterval(countdownInterval);
         contentGenerator(parent, getScore());
       }
+
+      setTimeout(function () {
+        var toErase = document.getElementById("checker");
+        if (toErase) {
+          toErase.parentNode.removeChild(toErase);
+        }
+      }, 1300);
     });
     liEl.appendChild(btnEl);
     return liEl;
@@ -221,6 +238,7 @@ function setAnswer(word = "") {
 var question = function (myQuestion, parent, lastAnswerStatus) {
   if (lastAnswerStatus === WRONG) {
     counter = counter - 5;
+    timeLeft.textContent = counter;
   }
 
   var contentSubtitle = document.createElement("h2");
@@ -257,13 +275,16 @@ var getScore = function () {
   contentSubtitle.textContent = "All done!";
 
   var contentParagraph = document.createElement("p");
-  contentParagraph.textContent = "Your final score is " + score;
+  contentParagraph.textContent = "Your final score is " + getFinalScore();
   contentParagraph.setAttribute(
     "style",
-    "display: block; marging: 15px auto 15px 0; "
+    "display: block; marging: 12px auto 18px 0; "
   );
   var contentForm = document.createElement("div");
-  contentForm.setAttribute("style", "display: block; margin: 12px auto 0 0;");
+  contentForm.setAttribute(
+    "style",
+    "display: block; margin: 12px auto 12px 0;"
+  );
   var contentInstruction = document.createElement("h5");
   contentInstruction.textContent = "Enter Initials : ";
   contentInstruction.setAttribute(
@@ -273,12 +294,20 @@ var getScore = function () {
   var contentPlayerInput = document.createElement("input");
   contentPlayerInput.setAttribute(
     "style",
-    "display: inline; line-height: 1.5; margin-right: 5px; font-size: 14px;"
+    "display: inline; line-height: 1.5; margin-right: 8px; font-size: 14px;"
   );
   var contentButton = document.createElement("button");
   contentButton.setAttribute("class", "button");
   contentButton.textContent = "Submit";
   contentButton.addEventListener("click", (btn) => {
+    let playerInitials = contentPlayerInput.value;
+    let playerScore = getFinalScore();
+    var topPlayer = { player: playerInitials, score: playerScore };
+    scoreBoard.push(topPlayer);
+    scoreBoard.sort((a, b) => b.score - a.score);
+    scoreBoard = scoreBoard.slice(0, 5);
+    let passPlayer = JSON.stringify(scoreBoard);
+    localStorage.setItem(hSKey, passPlayer);
     contentGenerator(display, highScores());
   });
   let formElements = [contentInstruction, contentPlayerInput, contentButton];
@@ -303,20 +332,33 @@ var highScores = function () {
     "margin: 35px auto 35px auto; font-size: 42px; text-align: center;"
   );
   var contentShow = document.createElement("ol");
-  var div = document.createElement("div");
-  div.setAttribute("class", "bottomBtns");
+  contentShow.setAttribute("class", "board");
+  var best5 = mapHighScores(scoreBoard);
+  appendList(contentShow, best5);
+  var btnBar = document.createElement("div");
+  btnBar.setAttribute("class", "bottomBtns");
   var btn1 = document.createElement("button");
-  contentButton.textContent = "Go Back";
-  contentButton.setAttribute("class", "button");
-  contentButton.setAttribute("id", "back");
-  contentButton.setAttribute("style", "display: block; margin: 0 12px 0 12px;");
+  btn1.textContent = "Go Back";
+  btn1.setAttribute("class", "button");
+  btn1.setAttribute("id", "back");
+  btn1.addEventListener("click", (btn) => {
+    contentGenerator(display, splashContainer());
+  });
+  //btn1.setAttribute("style", "display: block; margin: 0 12px 0 12px;");
   var btn2 = document.createElement("button");
-  contentButton.textContent = "Clear Highscores";
-  contentButton.setAttribute("class", "button");
-  contentButton.setAttribute("id", "reset");
-  contentButton.setAttribute("style", "display: block; margin: 0 12px 0 12px;");
+  btn2.textContent = "Clear Highscores";
+  btn2.setAttribute("class", "button");
+  btn2.setAttribute("id", "reset");
+  btn2.addEventListener("click", (btn) => {
+    localStorage.clear();
+    scoreBoard = [];
+    contentGenerator(display, highScores());
+  });
+  //btn2.setAttribute("style", "display: block; margin: 0 12px 0 12px;");
   let buttons = [btn1, btn2];
-  appendList(div, buttons);
+  appendList(btnBar, buttons);
+  let myContents = [contentTitle, contentShow, btnBar];
+  return myContents;
 };
 
 contentGenerator(display, splashContainer());
@@ -332,3 +374,24 @@ function checkAnswer() {
   contentChecker.textContent = lastAnswerChecked;
   return contentChecker;
 }
+
+var getFinalScore = () => {
+  return counter;
+};
+
+/**
+ * Maps highscore list to a list of li elements
+ * @param {*} array
+ */
+var mapHighScores = function (array) {
+  return array.map((highscore) => {
+    let liEl = document.createElement("li");
+    liEl.textContent = highscore.player;
+    liEl.setAttribute("class", "score");
+    let spanEl = document.createElement("span");
+    spanEl.textContent = highscore.score;
+    spanEl.setAttribute("class", "right-aligned");
+    liEl.appendChild(spanEl);
+    return liEl;
+  });
+};
