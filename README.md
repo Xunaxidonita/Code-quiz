@@ -1,8 +1,8 @@
-# Password Generator
+# Code quiz
 
 ## Purpose
 
-A website that hosts a quick thinking game of coding knowledge. Take a quiz against the clock.
+A website that hosts a quick thinking game of coding knowledge. Take a quiz against the clock!
 
 ## Built With
 
@@ -19,3 +19,6 @@ https://xunaxidonita.github.io/Code_quiz
 Made with ❤️ by Xunaxidonita
 
 ## Screenshot
+
+[![screenshot1.png](https://i.postimg.cc/9QGLy0FM/screenshot1.png)](https://postimg.cc/0zyGs8SR)
+[![screenshot2.png](https://i.postimg.cc/DznB6h8c/screenshot2.png)](https://postimg.cc/87XRkqdF)
