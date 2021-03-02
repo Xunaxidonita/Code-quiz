@@ -289,6 +289,10 @@ var getScore = function () {
     "style",
     "display: block; marging: 12px auto 18px 0; "
   );
+  var formWrap = document.createElement("form");
+  formWrap.setAttribute("class", "form");
+  formWrap.setAttribute("id", "set-score");
+
   var contentForm = document.createElement("div");
   contentForm.setAttribute(
     "style",
@@ -308,7 +312,7 @@ var getScore = function () {
   var contentButton = document.createElement("button");
   contentButton.setAttribute("class", "button");
   contentButton.textContent = "Submit";
-  contentButton.addEventListener("click", (btn) => {
+  formWrap.addEventListener("submit", (btn) => {
     let playerInitials = contentPlayerInput.value;
     if (playerInitials === "") {
       playerInitials = "--";
@@ -325,13 +329,15 @@ var getScore = function () {
   let formElements = [contentInstruction, contentPlayerInput, contentButton];
   appendList(contentForm, formElements);
 
+  formWrap.appendChild(contentForm);
+
   var divEl = document.createElement("div");
   divEl.setAttribute("class", "ghost");
 
   var contentChecker = checkAnswer();
   divEl.appendChild(contentChecker);
 
-  let myContents = [contentSubtitle, contentParagraph, contentForm, divEl];
+  let myContents = [contentSubtitle, contentParagraph, formWrap, divEl];
   return myContents;
 };
 
