@@ -132,6 +132,7 @@ var startCounter = function () {
     } else {
       clearInterval(countdownInterval);
       alert("Your time is over!");
+      contentGenerator(display, getScore());
     }
   }, 1000);
 };
@@ -224,7 +225,7 @@ var toBtnListItem = function (obj, parent) {
         );
       } else {
         clearInterval(countdownInterval);
-        contentGenerator(parent, getScore());
+        contentGenerator(display, getScore());
       }
 
       setTimeout(function () {
@@ -266,14 +267,16 @@ var question = function (myQuestion, parent, lastAnswerStatus) {
   var divEl = document.createElement("div");
   divEl.setAttribute("class", "ghost");
 
-  var contentChecker = checkAnswer();
-  divEl.appendChild(contentChecker);
+  var checkedAnswer = checkAnswer();
+  divEl.appendChild(checkedAnswer);
 
-  let myContents = [contentSubtitle, contentList, contentChecker];
+  let myContents = [contentSubtitle, contentList, checkedAnswer];
   return myContents;
 };
 
 var getScore = function () {
+  var wrapper = document.createElement("div");
+  wrapper.setAttribute("class", "trivia");
   var contentSubtitle = document.createElement("h2");
   contentSubtitle.setAttribute("class", "question");
   contentSubtitle.setAttribute("class", "title");
@@ -334,11 +337,15 @@ var getScore = function () {
   var divEl = document.createElement("div");
   divEl.setAttribute("class", "ghost");
 
-  var contentChecker = checkAnswer();
-  divEl.appendChild(contentChecker);
+  var checkedAnswer = checkAnswer();
+  if (counter > 0) {
+    divEl.appendChild(checkedAnswer);
+  }
 
   let myContents = [contentSubtitle, contentParagraph, formWrap, divEl];
-  return myContents;
+  appendList(wrapper, myContents);
+  let finalContent = [wrapper];
+  return finalContent;
 };
 
 var highScores = function () {
